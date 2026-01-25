@@ -1,3 +1,48 @@
+# NixSnip
+
+The LuaSnip fork with Nix defined Snippets!
+
+# Extra Features
+- Nix defined VS Code style snippets
+- Strongly typed snippets
+
+# Extra Requirements
+- ```nix``` command in your ```$PATH```, enable ```nix.settings.experimental-features = [ "nix-command" ];```
+
+# Examples
+Nix
+```nix
+{
+    vim-print = {
+        prefix = "vp";
+        body = "vim.print($1)";
+    };
+}
+```
+JSON
+```json
+{
+    "vim-print": {
+        "prefix": "vp",
+        "body": "vim.print($1)"
+    }
+}
+```
+
+VS Code style snippets require ```prefix``` and ```body```, failing to define those will result in an error, no more hours will be wasted debugging and realizing you typed preflx (<-- PREFLX) instead!
+```
+Error on file '.../lua.nix' snippet 'vim-api' Property: 'prefix' not defined.
+```
+See VS Code's snippet <a href="https://code.visualstudio.com/docs/editing/userdefinedsnippets" target="_blank" >documentation</a>
+
+## Caveats
+Nix's string iterpolation syntax ```${}``` and VS Code's Placeholders ```${}``` conflict, so you must escape it as ```\${}```
+
+>[!IMPORTANT]
+> package.json cannot be defined in Nix (yet)!
+
+### Below, the original LuaSnip README.md
+
 [![LuaSnip](https://img.shields.io/matrix/luasnip:matrix.org?label=Matrix&logo=matrix)](https://matrix.to/#/%23luasnip:matrix.org)
 # LuaSnip
 https://user-images.githubusercontent.com/41961280/122515860-5179fa00-d00e-11eb-91f7-331893f61fbf.mp4

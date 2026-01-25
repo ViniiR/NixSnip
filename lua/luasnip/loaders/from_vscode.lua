@@ -28,6 +28,7 @@ local json_decoders = {
 	json = util.json_decode,
 	jsonc = require("luasnip.util.jsonc").decode,
 	["code-snippets"] = require("luasnip.util.jsonc").decode,
+	nix = require("luasnip.util.nix").decode,
 }
 
 local function read_json(fname)
@@ -40,13 +41,16 @@ local function read_json(fname)
 	local fname_extension = Path.extension(fname)
 	if json_decoders[fname_extension] == nil then
 		log.error(
-			"`%s` was expected to have file-extension either `json`, `jsonc` or `code-snippets`, but doesn't.",
+			"`%s` was expected to have file-extension either `json`, `jsonc`, `code-snippets` or `nix`, but doesn't.",
 			fname
 		)
 		return nil
 	end
 	local fname_decoder = json_decoders[fname_extension]
 
+	if fname_extension == "nix" then
+		data = fname
+	end
 	local status, result = pcall(fname_decoder, data)
 	if status then
 		return result
