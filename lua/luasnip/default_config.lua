@@ -119,6 +119,10 @@ return {
 	-- preserve default of store_selection_keys.
 	cut_selection_keys = nil,
 
+	nixsnip = {
+		enforce_manifest_properties = true
+	},
+
 	ext_opts = {
 		[types.textNode] = {
 			active = { hl_group = "LuasnipTextNodeActive" },

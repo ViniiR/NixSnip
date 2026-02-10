@@ -39,7 +39,42 @@ See VS Code's snippet <a href="https://code.visualstudio.com/docs/editing/userde
 Nix's string iterpolation syntax ```${}``` and VS Code's Placeholders ```${}``` conflict, so you must escape it as ```\${}```
 
 >[!IMPORTANT]
-> package.json cannot be defined in Nix (yet)!
+> ```package.json``` is called ```manifest.nix```
+
+# Manifest.nix
+
+manifest.nix has two parsers 'secure' and not 'secure' you can select them by using luasnip's setup function
+
+```lua
+require("luasnip").setup({
+	nixsnip = {
+		enforce_manifest_properties = true -- default 'true', secure parser
+	},
+    -- ...
+})
+```
+
+if ```true``` it enforces properties with the following rules
+
+```nix
+{
+	name = "snippet-sample"; # enforced as 'string'
+	displayName = "Snippet Sample"; # not enforced
+	description = "Snippet Sample"; # enforced as 'string' or 'null'
+	version = "0.0.1"; # enforced as 'string' or 'null'
+	publisher = "vscode-samples"; # not enforced
+	engines = {}; # not enforced
+	categories = []; # enforced as 'string list' or 'null'
+	contributes = { # enforced as 'set'
+		snippets = [ # enforced as 'set list'
+			{
+				language = "javascript"; # enforced as 'string'
+				path = ./snippets.json; # enforced as 'path'
+			}
+		];
+	};
+}
+```
 
 ### Below, the original LuaSnip README.md
 

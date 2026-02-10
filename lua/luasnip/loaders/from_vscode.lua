@@ -206,6 +206,12 @@ local function get_snippet_files(manifest)
 	for _, snippet_entry in pairs(package_data.contributes.snippets) do
 		local absolute_path = Path.join(package_parent, snippet_entry.path)
 
+		-- Nix manifests are forced to define paths in its 'path' type
+		-- When parsing, it returns an absolute path to the file
+		if require("luasnip.util.nix").is_nix_manifest(manifest) then
+			absolute_path = snippet_entry.path
+		end
+
 		local normalized_snippet_file = Path.normalize(absolute_path)
 
 		if not normalized_snippet_file then
@@ -465,11 +471,17 @@ local function get_manifests(paths)
 				if Path.exists(tentative_manifest_path) then
 					table.insert(manifest_paths, tentative_manifest_path)
 				else
-					log.warn(
-						"Could not find package.json(c) in path %s (expanded to %s).",
-						dir,
-						Path.expand(dir)
-					)
+					tentative_manifest_path =
+						Path.expand_keep_symlink(Path.join(dir, "manifest.nix"))
+					if Path.exists(tentative_manifest_path) then
+						table.insert(manifest_paths, tentative_manifest_path)
+					else
+						log.warn(
+							"Could not find package.json(c) or manifest.nix in path %s (expanded to %s).",
+							dir,
+							Path.expand(dir)
+						)
+					end
 				end
 			end
 		end
