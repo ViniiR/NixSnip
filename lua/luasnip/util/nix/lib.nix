@@ -233,18 +233,6 @@ in {
             result = builtins.mapAttrs (name: value: parse_snippet value) expr;
         in
             result;
-    # TODO: remove, unused
-    parse_set = filename: expr:
-        if builtins.typeOf expr != "set"
-        then {
-            type = types.error;
-            message = "File: '${filename}' must be of type: 'set' aka '{ }'.";
-        }
-        else let
-            result = builtins.mapAttrs (name: value: parse_snippet value) expr;
-        in
-            result;
-
     # does not enforce properties
     parse_manifest = filepath: let
         filename = builtins.baseNameOf filepath;
