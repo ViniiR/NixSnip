@@ -51,7 +51,6 @@ function M.decode(fname)
 	if M.is_nix_manifest(fname) then
 		local decoded = util.json_decode(res.stdout)
 
-		-- TODO: parse manifest.contributes.snippets errors
 		if decoded.type == "Error" and decoded.content ~= nil then
 			for index, value in ipairs(decoded.content) do
 				if value.type == "Error" then
@@ -81,17 +80,20 @@ function M.decode(fname)
 
 	for key, val in pairs(snippets) do
 		if val.type == "Error" and val.message ~= nil then
-			-- TODO: does not display error if first file opened is not lua
-			-- This is very important since it's the entire appeal of this fork!
-			vim.notify(
-				string.format(
-					"\nError on file '%s' snippet '%s' %s\n",
-					fname,
-					key,
-					val.message
-				),
-				vim.log.levels.ERROR
-			)
+			-- NOTE: WHY DOES EVERY ISSUE I HAVE IN PROGRAMMING GETS RESOLVED
+			-- WITH A DEFER
+			-- TODO: this works but PLEASE REMOVE THE DEFER, I HATE IT
+			vim.defer_fn(function()
+				vim.notify(
+					string.format(
+						"\nError on file '%s' snippet '%s' %s\n",
+						fname,
+						key,
+						val.message
+					),
+					vim.log.levels.ERROR
+				)
+			end, 1)
 			snippets[key] = nil -- ignore broken snippet
 		end
 	end
